@@ -1,0 +1,5 @@
+Las funcionalidades que buscamos implementar en el software incluirán:
+Cálculo de medidas de posición central: Media, Mediana, Moda.
+Cálculo de medidas de dispersión: Rango, Desviación Estándar, Varianza (y potencialmente otras como coeficiente de asimetría o curtosis).
+Ingreso de datos flexible: Permitirá el ingreso de datos individuales o de forma masiva a través de archivos.
+Interpretación de resultados : El software podrá brindar explicaciones básicas sobre el significado de las medidas calculadas, contribuyendo a una mejor comprensión de los datos analizados. 
