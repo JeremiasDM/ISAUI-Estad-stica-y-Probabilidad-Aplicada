@@ -36,7 +36,7 @@ else:
     print("Categoría no válida. Saliendo del programa.")
     exit()
 
-# Preguntar al usuario por los datos
+# Diccionario que despues de preguntarle al usuario por los datos los almacena
 data = sorted(list(map(float, input(f"Ingrese los datos en {unidad} separados por espacios: ").split())))
 
 # Preguntar al usuario qué estadísticas desea ver
@@ -52,10 +52,10 @@ opciones = input("Ingrese los números de las estadísticas que desea ver: ").sp
 
 # Mostrar las estadísticas seleccionadas
 if "1" in opciones:
-    print(f"La Media de este conjunto es: {np.mean(data)} {unidad}")
+    print(f"La Media de este conjunto es: {np.mean(data)} {unidad}") #Calcula la media aritmética a lo largo del eje especificado.
 
 if "2" in opciones:
-    print(f"La Mediana de este conjunto es: {np.median(data)} {unidad}")
+    print(f"La Mediana de este conjunto es: {np.median(data)} {unidad}") #Calcula la mediana a lo largo del eje especificado.
 
 if "3" in opciones:
     modas = calcular_moda(data)
@@ -67,7 +67,7 @@ if "3" in opciones:
         print("No hay una moda en este conjunto de datos")
 
 if "4" in opciones:
-    print(f"La Desviación Estándar de este conjunto es: {np.std(data)} {unidad}")
+    print(f"La Desviación Estándar de este conjunto es: {np.std(data)} {unidad}") #Calcula la desviación estándar a lo largo del eje especificado.
 
 if "5" in opciones:
     print(f"La Varianza de Este Conjunto es: {np.var(data)} {unidad}")
