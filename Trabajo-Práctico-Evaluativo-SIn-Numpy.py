@@ -1,7 +1,7 @@
-# Función para convertir el tiempo en formato "hh:mm" a minutos
-def convertir_tiempo_a_minutos(tiempo_str):
+# Función para convertir el tiempo en formato "hh:mm" a formato decimal (horas)
+def convertir_tiempo_a_decimal(tiempo_str):
     horas, minutos = map(int, tiempo_str.split(':'))  # Separa horas y minutos, y los convierte a enteros
-    return horas * 60 + minutos  # Convierte todo el tiempo a minutos
+    return horas + minutos / 60  # Convierte los minutos a una fracción de hora y los suma a las horas
 
 # Función para calcular la media
 def calcular_media(data):
@@ -49,27 +49,91 @@ def calcular_rango(data):
 # Función para calcular cuartiles
 def calcular_cuartil(data, cuartil):
     data_sorted = sorted(data)  # Ordena los datos
-    index = cuartil * (len(data) - 1) // 100  # Calcula el índice del cuartil
+    index = int(cuartil * (len(data) - 1) / 100)  # Calcula el índice del cuartil
     return data_sorted[index]  # Retorna el valor en ese índice
+
+# Ejemplo de uso de la función convertir_tiempo_a_decimal
+# Convertir 2:30 a formato decimal
+ejemplo_tiempo = "2:30"
+ejemplo_decimal = convertir_tiempo_a_decimal(ejemplo_tiempo)
+print(f"Ejemplo: {ejemplo_tiempo} en formato decimal es {ejemplo_decimal}")
 
 while True:
     # Preguntar al usuario por la categoría de los datos
     print("Seleccione la categoría de los datos:")
-    print("1. Peso (Kg, Libras, etc)")
-    print("2. Distancia (Metros, Pies, etc)")
-    print("3. Tiempo (Horas, Minutos, Segundos)")
-    print("4. Precios")
+    print("1. Peso (Kg, g, Libras, oz)")
+    print("2. Longitud (Metros, cm, Km, ft, in)")
+    print("3. Volumen (L, mL, gal)")
+    print("4. Tiempo (Horas, Minutos, Segundos)")
+    print("5. Temperatura (°C, °F, K)")
     categoria = input("Ingrese el número de la categoría: ")
 
     unidad = ""
     data = []
     if categoria == "1":
-        unidad = input("Ingrese la unidad de peso (por ejemplo, Kg, Libras): ")
+        print("Seleccione la unidad de peso:")
+        print("1. Kilogramos (Kg)")
+        print("2. Gramos (g)")
+        print("3. Libras (lb)")
+        print("4. Onzas (oz)")
+        unidad_peso = input("Ingrese el número de la unidad de peso: ")
+
+        if unidad_peso == "1":
+            unidad = "Kg"
+        elif unidad_peso == "2":
+            unidad = "g"
+        elif unidad_peso == "3":
+            unidad = "lb"
+        elif unidad_peso == "4":
+            unidad = "oz"
+        else:
+            print("Unidad de peso no válida. Saliendo del programa.")
+            exit()
         data = sorted(list(map(float, input(f"Ingrese los datos en {unidad} separados por espacios: ").split())))
+        
     elif categoria == "2":
-        unidad = input("Ingrese la unidad de distancia (por ejemplo, Metros, Pies): ")
+        print("Seleccione la unidad de longitud:")
+        print("1. Metros (m)")
+        print("2. Centímetros (cm)")
+        print("3. Kilómetros (Km)")
+        print("4. Pies (ft)")
+        print("5. Pulgadas (in)")
+        unidad_longitud = input("Ingrese el número de la unidad de longitud: ")
+
+        if unidad_longitud == "1":
+            unidad = "m"
+        elif unidad_longitud == "2":
+            unidad = "cm"
+        elif unidad_longitud == "3":
+            unidad = "Km"
+        elif unidad_longitud == "4":
+            unidad = "ft"
+        elif unidad_longitud == "5":
+            unidad = "in"
+        else:
+            print("Unidad de longitud no válida. Saliendo del programa.")
+            exit()
         data = sorted(list(map(float, input(f"Ingrese los datos en {unidad} separados por espacios: ").split())))
+        
     elif categoria == "3":
+        print("Seleccione la unidad de volumen:")
+        print("1. Litros (L)")
+        print("2. Mililitros (mL)")
+        print("3. Galones (gal)")
+        unidad_volumen = input("Ingrese el número de la unidad de volumen: ")
+
+        if unidad_volumen == "1":
+            unidad = "L"
+        elif unidad_volumen == "2":
+            unidad = "mL"
+        elif unidad_volumen == "3":
+            unidad = "gal"
+        else:
+            print("Unidad de volumen no válida. Saliendo del programa.")
+            exit()
+        data = sorted(list(map(float, input(f"Ingrese los datos en {unidad} separados por espacios: ").split())))
+        
+    elif categoria == "4":
         print("Seleccione la unidad de tiempo:")
         print("1. Horas (hh:mm)")
         print("2. Minutos")
@@ -77,9 +141,9 @@ while True:
         unidad_tiempo = input("Ingrese el número de la unidad de tiempo: ")
 
         if unidad_tiempo == "1":
-            unidad = "minutos"
+            unidad = "horas decimales"
             print("Ingrese los tiempos en formato 'hh:mm', separados por espacios.")
-            data = sorted(list(map(convertir_tiempo_a_minutos, input("Ingrese los tiempos: ").split())))
+            data = sorted(list(map(convertir_tiempo_a_decimal, input("Ingrese los tiempos: ").split())))
         elif unidad_tiempo == "2":
             unidad = "minutos"
             data = sorted(list(map(float, input(f"Ingrese los tiempos en {unidad} separados por espacios: ").split())))
@@ -89,9 +153,25 @@ while True:
         else:
             print("Unidad de tiempo no válida. Saliendo del programa.")
             exit()
-    elif categoria == "4":
-        unidad = input("Ingrese la moneda (por ejemplo, USD, EUR): ")
+            
+    elif categoria == "5":
+        print("Seleccione la unidad de temperatura:")
+        print("1. Grados Celsius (°C)")
+        print("2. Grados Fahrenheit (°F)")
+        print("3. Kelvin (K)")
+        unidad_temperatura = input("Ingrese el número de la unidad de temperatura: ")
+
+        if unidad_temperatura == "1":
+            unidad = "°C"
+        elif unidad_temperatura == "2":
+            unidad = "°F"
+        elif unidad_temperatura == "3":
+            unidad = "K"
+        else:
+            print("Unidad de temperatura no válida. Saliendo del programa.")
+            exit()
         data = sorted(list(map(float, input(f"Ingrese los datos en {unidad} separados por espacios: ").split())))
+        
     else:
         print("Categoría no válida. Saliendo del programa.")
         exit()
