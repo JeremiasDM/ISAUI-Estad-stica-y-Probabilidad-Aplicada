@@ -3,22 +3,30 @@ def convertir_tiempo_a_decimal(tiempo_str):
     horas, minutos = map(int, tiempo_str.split(':'))  # Separa horas y minutos, y los convierte a enteros
     return horas + minutos / 60  # Convierte los minutos a una fracción de hora y los suma a las horas
 
+# Función para convertir tiempo decimal a formato "hh:mm"
+def convertir_decimal_a_tiempo(decimal):
+    horas = int(decimal)
+    minutos = int((decimal - horas) * 60)
+    return f"{horas:02d}:{minutos:02d}"
+
 # Función para calcular la media
-def calcular_media(data):
-    return sum(data) / len(data)  # Suma de todos los datos dividido por el número de datos
+def calcular_media(data, es_tiempo=False):
+    media = sum(data) / len(data)  # Suma de todos los datos dividido por el número de datos
+    return convertir_decimal_a_tiempo(media) if es_tiempo else media
 
 # Función para calcular la mediana
-def calcular_mediana(data):
+def calcular_mediana(data, es_tiempo=False):
     n = len(data)  # Número de elementos en data
     data_sorted = sorted(data)  # Ordena la lista data
     mid = n // 2  # Encuentra el índice del punto medio
     if n % 2 == 0:
-        return (data_sorted[mid - 1] + data_sorted[mid]) / 2  # Promedio de dos elementos medios para listas de tamaño par
+        mediana = (data_sorted[mid - 1] + data_sorted[mid]) / 2  # Promedio de dos elementos medios para listas de tamaño par
     else:
-        return data_sorted[mid]  # Elemento medio para listas de tamaño impar
+        mediana = data_sorted[mid]  # Elemento medio para listas de tamaño impar
+    return convertir_decimal_a_tiempo(mediana) if es_tiempo else mediana
 
 # Función para calcular la moda
-def calcular_moda(data):
+def calcular_moda(data, es_tiempo=False):
     frecuencias = {}  # Diccionario para almacenar la frecuencia de cada elemento
     for valor in data:
         if valor in frecuencias:
@@ -29,6 +37,12 @@ def calcular_moda(data):
     max_frecuencia = max(frecuencias.values())  # Encuentra la frecuencia más alta
     modas = [key for key, value in frecuencias.items() if value == max_frecuencia]  # Encuentra todos los valores con esa frecuencia máxima
 
+    if len(modas) == len(frecuencias):
+        return None  # Si todos los valores tienen la misma frecuencia, no hay moda
+    
+    if es_tiempo:
+        modas = [convertir_decimal_a_tiempo(moda) for moda in modas]
+    
     return modas
 
 # Función para calcular la desviación estándar
@@ -43,20 +57,16 @@ def calcular_varianza(data):
     return sum((x - mean) ** 2 for x in data) / len(data)  # Retorna la varianza
 
 # Función para calcular el rango
-def calcular_rango(data):
-    return max(data) - min(data)  # Retorna la diferencia entre el máximo y mínimo valor
+def calcular_rango(data, es_tiempo=False):
+    rango = max(data) - min(data)  # Retorna la diferencia entre el máximo y mínimo valor
+    return convertir_decimal_a_tiempo(rango) if es_tiempo else rango
 
 # Función para calcular cuartiles
-def calcular_cuartil(data, cuartil):
+def calcular_cuartil(data, cuartil, es_tiempo=False):
     data_sorted = sorted(data)  # Ordena los datos
     index = int(cuartil * (len(data) - 1) / 100)  # Calcula el índice del cuartil
-    return data_sorted[index]  # Retorna el valor en ese índice
-
-# Ejemplo de uso de la función convertir_tiempo_a_decimal
-# Convertir 2:30 a formato decimal
-ejemplo_tiempo = "2:30"
-ejemplo_decimal = convertir_tiempo_a_decimal(ejemplo_tiempo)
-print(f"Ejemplo: {ejemplo_tiempo} en formato decimal es {ejemplo_decimal}")
+    cuartil_val = data_sorted[index]  # Retorna el valor en ese índice
+    return convertir_decimal_a_tiempo(cuartil_val) if es_tiempo else cuartil_val
 
 while True:
     # Preguntar al usuario por la categoría de los datos
@@ -70,6 +80,8 @@ while True:
 
     unidad = ""
     data = []
+    es_tiempo = False  # Bandera para indicar si los datos son tiempos
+
     if categoria == "1":
         print("Seleccione la unidad de peso:")
         print("1. Kilogramos (Kg)")
@@ -141,9 +153,10 @@ while True:
         unidad_tiempo = input("Ingrese el número de la unidad de tiempo: ")
 
         if unidad_tiempo == "1":
-            unidad = "horas decimales"
+            unidad = "hh:mm"
             print("Ingrese los tiempos en formato 'hh:mm', separados por espacios.")
             data = sorted(list(map(convertir_tiempo_a_decimal, input("Ingrese los tiempos: ").split())))
+            es_tiempo = True
         elif unidad_tiempo == "2":
             unidad = "minutos"
             data = sorted(list(map(float, input(f"Ingrese los tiempos en {unidad} separados por espacios: ").split())))
@@ -190,12 +203,14 @@ while True:
 
     # Mostrar las estadísticas seleccionadas
     if "1" in opciones or "8" in opciones:
-        print(f"La Media de este conjunto es: {calcular_media(data)} {unidad}")
+        print(f"La Media de este conjunto es: {calcular_media(data, es_tiempo)} {unidad}")
     if "2" in opciones or "8" in opciones:
-        print(f"La Mediana de este conjunto es: {calcular_mediana(data)} {unidad}")
+        print(f"La Mediana de este conjunto es: {calcular_mediana(data, es_tiempo)} {unidad}")
     if "3" in opciones or "8" in opciones:
-        modas = calcular_moda(data)
-        if len(modas) == 1:
+        modas = calcular_moda(data, es_tiempo)
+        if modas is None:
+            print(f"No hay una moda absoluta en este conjunto.")
+        elif len(modas) == 1:
             print(f"La Moda de este conjunto es: {modas[0]} {unidad}")
         else:
             print(f"Las Modas de este conjunto son: {', '.join(map(str, modas))} {unidad}")
@@ -204,15 +219,15 @@ while True:
     if "5" in opciones or "8" in opciones:
         print(f"La Varianza de este conjunto es: {calcular_varianza(data)} {unidad}")
     if "6" in opciones or "8" in opciones:
-        print(f"El Rango de este conjunto es: {calcular_rango(data)} {unidad}")
+        print(f"El Rango de este conjunto es: {calcular_rango(data, es_tiempo)} {unidad}")
     if "7" in opciones or "8" in opciones:
-        print(f"Q1: {calcular_cuartil(data, 25)} {unidad}")
-        print(f"Q2: {calcular_cuartil(data, 50)} {unidad}")  # La mediana
-        print(f"Q3: {calcular_cuartil(data, 75)} {unidad}")
+        print(f"Q1: {calcular_cuartil(data, 25, es_tiempo)} {unidad}")
+        print(f"Q2: {calcular_cuartil(data, 50, es_tiempo)} {unidad}")  # La mediana
+        print(f"Q3: {calcular_cuartil(data, 75, es_tiempo)} {unidad}")
 
     # Preguntar al usuario si desea introducir nuevos datos
-    nueva_ejecucion = input("¿Desea introducir nuevos datos? (s/n): ").lower()
-    if nueva_ejecucion != 's':
+    nueva_ejecucion = input("¿Desea introducir nuevos datos? (si/no): ").lower()
+    if nueva_ejecucion != 'si':
         break
 
-print("Programa finalizado.")
+print("El Programa ha finalizado. Gracias por utilizar nuestro programa.")
