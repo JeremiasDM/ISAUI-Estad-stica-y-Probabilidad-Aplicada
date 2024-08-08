@@ -1,8 +1,3 @@
-# Función para convertir el tiempo en formato "hh:mm" a formato decimal (horas)
-def convertir_tiempo_a_decimal(tiempo_str):
-    horas, minutos = map(int, tiempo_str.split(':'))  # Separa horas y minutos, y los convierte a enteros
-    return horas + minutos / 60  # Convierte los minutos a una fracción de hora y los suma a las horas
-
 # Función para convertir tiempo decimal a formato "hh:mm"
 def convertir_decimal_a_tiempo(decimal):
     horas = int(decimal)
